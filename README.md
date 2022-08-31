@@ -3,6 +3,8 @@ Metal Text Styling Filter for Gimp - THIS IS A SUPER FILTER Which means it requi
 
 ![image preview](preview3.png)
 
+![image preview](preview7.png)
+
 
 ## Compiling and Installing
 
