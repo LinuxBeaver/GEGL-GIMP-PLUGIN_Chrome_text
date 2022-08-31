@@ -1,0 +1,19 @@
+# GIMP 'GEGL Operation' settings
+
+(time 0)
+(bvradius 10.359999999999999)
+(bevelconfig 60.560000000000002)
+(azimuth 103.31999999999999)
+(solar1 2.1309999999999998)
+(solar2 2.5019999999999998)
+(solar3 0.49099999999999999)
+(lightmetal 2.6749999999999998)
+(smoothmetal 0)
+(glow 4.1349999999999998)
+(softglow 4.2809999999999997)
+(sharpen 0.16900000000000001)
+(smoothedge 21.350000000000001)
+(opacity 1)
+(th 0.20999999999999999)
+
+# end of 'GEGL Operation' settings
