@@ -65,6 +65,13 @@ property_double (desaturate, _("Desaturation Channel Lock"), 0.0)
     ui_range (0.0, 0.0)
     ui_meta     ("role", "output-extent")
 
+property_double (value, _("Slide to invert colors on original image"), 0)
+    description (_("Invert with Slider"))
+    value_range (0, 1)
+    ui_range    (0, 1)
+    ui_gamma   (90)
+
+
 
 #else
 
@@ -77,7 +84,7 @@ property_double (desaturate, _("Desaturation Channel Lock"), 0.0)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-  GeglNode *input, *output, *solar, *desat, *smooth, *light, *ocolor;
+  GeglNode *input, *output, *solar, *desat, *smooth, *light, *invert, *opacity, *over, *ocolor;
 
   input    = gegl_node_get_input_proxy (gegl, "input");
   output   = gegl_node_get_output_proxy (gegl, "output");
@@ -108,6 +115,18 @@ static void attach (GeglOperation *operation)
                                   "operation", "gimp:colorize",
                                   NULL);
 
+   opacity = gegl_node_new_child (gegl,
+                                  "operation", "gegl:opacity",
+                                  NULL);
+
+   invert = gegl_node_new_child (gegl,
+                                  "operation", "gegl:invert-gamma",
+                                  NULL);
+
+   over = gegl_node_new_child (gegl,
+                                  "operation", "gegl:over",
+                                  NULL);
+
 
   gegl_operation_meta_redirect (operation, "solar1", solar, "cpn-1-frequency");
 
@@ -121,13 +140,16 @@ static void attach (GeglOperation *operation)
 
   gegl_operation_meta_redirect (operation, "smooth", smooth, "iterations");
 
+  gegl_operation_meta_redirect (operation, "value", opacity, "value");
 
 
 
 
 
 
-  gegl_node_link_many (input, solar, desat, smooth, light, output, NULL);
+  gegl_node_link_many (input, over, solar, desat, smooth, light, output, NULL);
+  gegl_node_connect_from (over, "aux", opacity, "output");
+  gegl_node_link_many (input, invert, opacity, NULL);
 
 
 
