@@ -154,7 +154,7 @@ static void attach (GeglOperation *operation)
                                   NULL);
 
   smoothedge    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:zzsmoothedge",
+                                  "operation", "gegl:edgesmooth",
                                   NULL);
 
   opacity    = gegl_node_new_child (gegl,
