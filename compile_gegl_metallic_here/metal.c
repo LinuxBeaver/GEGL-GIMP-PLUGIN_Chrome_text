@@ -68,8 +68,8 @@ property_double (desaturate, _("Desaturation Channel Lock"), 0.0)
 property_double (value, _("Slide to invert colors on original image"), 0)
     description (_("Invert with Slider"))
     value_range (0, 1)
-    ui_range    (0, 1)
     ui_gamma   (90)
+	
 
 
 
