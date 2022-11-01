@@ -28,7 +28,7 @@ property_color (value, _("Color"), "#ffb386")
 
 property_double (bvradius, _("Radius of bevel (higher for larger text)"), 7.0)
   value_range (5.0, 15.0)
-  ui_range (1.0, 9)
+  ui_range (5.0, 9)
   ui_gamma (1.5)
 
 
@@ -62,14 +62,14 @@ property_double  (solar2, _("Solarization of Green Channel"), 2.8)
   ui_meta     ("hsl-label", _("Saturation frequency"))
 
 property_double  (solar3, _("Solarization of Blue Channel"), 2.1)
-  value_range (0, 4)
+  value_range (0.0, 4.0)
   ui_meta     ("sensitive", "! cpn-3-keep")
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
                         " color-model {hsl} : hsl-label]")
   ui_meta     ("rgb-label", _("Blue frequency"))
   ui_meta     ("hsl-label", _("Lightness frequency"))
 
-property_double (lightmetal, _("Darkness to Light"), 0)
+property_double (lightmetal, _("Darkness to Light"), 0.0)
    description  (_("Lightness adjustment"))
    value_range  (-10.0, 7.0)
 
@@ -99,11 +99,11 @@ property_double  (smoothedge, _("Median to smooth rough edges"), 50)
 
 property_double (opacity, _("Above 100% opacity for edges"), 1.0)
     description (_("Global opacity value that is always used on top of the optional auxiliary input buffer."))
-    value_range (1, 3.0)
+    value_range (1, 3)
     ui_range    (1, 3)
 
 property_double (th, _("Low looks nicer but makes unspaced text fuse"), 0.210)
-  value_range (0.195, 0.260)
+  value_range (0.195, 0.230)
   ui_range (0.195, 0.230)
 
 
