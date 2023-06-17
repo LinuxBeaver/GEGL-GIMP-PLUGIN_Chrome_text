@@ -130,7 +130,7 @@ static void attach (GeglOperation *operation)
                                   NULL);
 
   bevel    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:bevel",
+                                  "operation", "lb:bevel",
                                   NULL);
 
   metallic    = gegl_node_new_child (gegl,
@@ -154,7 +154,7 @@ static void attach (GeglOperation *operation)
                                   NULL);
 
   smoothedge    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:edgesmooth",
+                                  "operation", "lb:edgesmooth",
                                   NULL);
 
   opacity    = gegl_node_new_child (gegl,
@@ -204,7 +204,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",  "artistic",
     "reference-hash", "450056eat8b351dt25700ftevfe2g4fonf1c",
     "description", _(""
-                     "Make metal chrome text styling effects with GEGL. Works best on 100-500p text. Fails on very small text and wide and excessively bold fonts."),
+                     "Make metal chrome text styling effects with GEGL. Works best on 100-500p text. Fails on very small text and excessively wide fonts."),
     NULL);
 }
 
