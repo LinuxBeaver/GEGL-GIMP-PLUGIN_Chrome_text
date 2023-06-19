@@ -14,7 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
- * 2022 Edge Smooth
+ * 2022 Beaver Edge Smooth
  */
 
 #include "config.h"
@@ -185,7 +185,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->attach = attach;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:edgesmooth",
+    "name",        "lb:edgesmooth",
     "title",       _("Rough Edge Smoother"),
     "categories",  "EdgeSmoother",
     "reference-hash", "45ed5656a11bgxxdt27730vaefe2g4f1b2ac",
