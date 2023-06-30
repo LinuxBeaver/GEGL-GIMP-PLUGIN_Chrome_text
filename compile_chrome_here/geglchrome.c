@@ -17,35 +17,54 @@
  * 2022 GEGL chrome metal text styler - Beaver
  */
 
+/*
+Test Plugins GEGL graph without installing. REQUIRES BEVEL AND EDGE SMOOTH
+
+color-overlay value=#ffb386
+lb:bevel azimuth=60 bevel1=58 th=0.210 radius2=2  radius1=7 bevel2=
+metallic  solar1=27 solar2=2.8 solar3=2.1 
+noise-reduction iterations=2
+bloom strength=2
+
+lb:edgesmooth
+ */
+
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
 #ifdef GEGL_PROPERTIES
 
-property_color (value, _("Color"), "#ffb386")
-    description (_("The color to paint over the input"))
-      ui_meta     ("role", "output-extent")
+enum_start (guichangeenumchrometextlist)
+enum_value   (CHROMETEXT_SHOW_DEFAULT, "defaultchrometext", N_("Basic Metal Sliders"))
+enum_value   (CHHROMETEXT_SHOW_ADVANCE, "advancechrometext", N_("Advance Metal Sliders and Edge Smooth"))
+  enum_end (guiendchrometextlist)
 
-property_double (bvradius, _("Radius of bevel (higher for larger text)"), 7.0)
+property_enum(guichange, _("Part of filter displayed"),
+    guiendchrometextlist, guichangeenumchrometextlist,
+    CHROMETEXT_SHOW_DEFAULT)
+  description(_("Change the GUI option"))
+
+
+property_double (bvradius, _("Radius of bevel"), 7.0)
+    description (_("This setting should be higher for larger text and lower for smaller text"))
   value_range (5.0, 15.0)
   ui_range (5.0, 9)
   ui_gamma (1.5)
 
-
-
-property_double (bevelconfig, _("Depth Angle (larger text needs lower)"), 58.0)
-    description (_("Elevation angle (degrees)"))
+property_double (bevelconfig, _("Depth Angle"), 58.0)
+    description (_("Emboss Elevation, Larger text should have lower values and smaller text can benefit from higher values."))
     value_range (45, 80)
     ui_meta ("unit", "degree")
 
 
-property_double (azimuth, _("Rotate Lighting to alter chrome effect"), 60.0)
+property_double (azimuth, _("Rotate Lighting"), 60.0)
     description (_("Light angle (degrees)"))
     value_range (28, 350)
     ui_meta ("unit", "degree")
     ui_meta ("direction", "ccw")
 
 property_double (solar1, _("Solarization of Red Channel"), 2.7)
+    description (_("Gimp's alien map filter adjusting Red Channel"))
   value_range (2, 2.8)
   ui_meta     ("sensitive", "! cpn-1-keep")
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
@@ -55,6 +74,7 @@ property_double (solar1, _("Solarization of Red Channel"), 2.7)
 
 property_double  (solar2, _("Solarization of Green Channel"), 2.8)
   value_range (2.2, 2.8)
+    description (_("Gimp's alien map filter adjusting Green Channel"))
   ui_meta     ("sensitive", "! cpn-2-keep")
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
                         " color-model {hsl} : hsl-label]")
@@ -62,6 +82,7 @@ property_double  (solar2, _("Solarization of Green Channel"), 2.8)
   ui_meta     ("hsl-label", _("Saturation frequency"))
 
 property_double  (solar3, _("Solarization of Blue Channel"), 2.1)
+    description (_("Gimp's alien map filter adjusting Blue Channel"))
   value_range (0.0, 4.0)
   ui_meta     ("sensitive", "! cpn-3-keep")
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
@@ -74,37 +95,47 @@ property_double (lightmetal, _("Darkness to Light"), 0.0)
    value_range  (-10.0, 7.0)
 
 property_int  (smoothmetal, _("Smooth metal"), 2)
-  description (_("Smoothness"))
+  description (_("Smoothness via noise reduction"))
   value_range (0, 7)
   ui_range    (0, 7)
+ui_meta ("visible", "guichange {advancechrometext}")
 
 property_double (glow, _("Glow effect (bloom)"), 6.0)
-    description (_("Glow strength"))
+    description (_("Glow strength via gegl:bloom"))
     value_range (0.0, G_MAXDOUBLE)
     ui_range    (0.0, 14.0)
+ui_meta ("visible", "guichange {advancechrometext}")
 
 property_double (softglow, _("Soft glow effect"), 3.0)
+    description (_("Glow strength via gegl:softglow"))
     value_range (1.0, 7.0)
     ui_meta    ("unit", "pixel-distance")
+ui_meta ("visible", "guichange {advancechrometext}")
 
 property_double (sharpen, _("Sharpen Metal"), 0.2)
     description(_("Scaling factor for unsharp-mask, the strength of effect"))
     value_range (0.0, 0.9)
     ui_range    (0.0, 0.9)
     ui_gamma    (3.0)
+ui_meta ("visible", "guichange {advancechrometext}")
 
 property_double  (smoothedge, _("Median to smooth rough edges"), 50)
+    description(_("Median blur on the edges to smooth them"))
   value_range (0, 100)
   description (_("Neighborhood alpha percentile"))
+ui_meta ("visible", "guichange {advancechrometext}")
 
-property_double (opacity, _("Above 100% opacity for edges"), 1.0)
-    description (_("Global opacity value that is always used on top of the optional auxiliary input buffer."))
+property_double (opacity, _("Hyper Opacity for edges"), 1.0)
+    description (_("Above 100% opacity for edges"))
     value_range (1, 3)
     ui_range    (1, 3)
+ui_meta ("visible", "guichange {advancechrometext}")
 
-property_double (th, _("Low looks nicer but makes unspaced text fuse"), 0.210)
+property_double (th, _("Threshold Alpha of Bevel"), 0.210)
+    description(_("Bevel's threshold Alpha"))
   value_range (0.195, 0.230)
   ui_range (0.195, 0.230)
+ui_meta ("visible", "guichange {advancechrometext}")
 
 
 
@@ -120,6 +151,7 @@ static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
   GeglNode *input, *output, *color, *bevel, *metallic, *glow, *sharpen, *softglow, *noisereduction, *smoothedge, *opacity;
+  GeglColor *hidden_color_chrome_text = gegl_color_new ("#ffb386");
 
   input    = gegl_node_get_input_proxy (gegl, "input");
   output   = gegl_node_get_output_proxy (gegl, "output");
@@ -127,7 +159,8 @@ static void attach (GeglOperation *operation)
 
   color    = gegl_node_new_child (gegl,
                                   "operation", "gegl:color-overlay",
-                                  NULL);
+                                   "value", hidden_color_chrome_text, NULL);
+                           
 
   bevel    = gegl_node_new_child (gegl,
                                   "operation", "lb:bevel",
@@ -161,14 +194,7 @@ static void attach (GeglOperation *operation)
                                   "operation", "gegl:opacity",
                                   NULL);
 
-
-
-
-
-
   gegl_node_link_many (input, color, bevel, metallic, glow, sharpen, softglow, noisereduction, smoothedge, opacity, output, NULL);
-
-
 
   gegl_operation_meta_redirect (operation, "value", color, "value");
   gegl_operation_meta_redirect (operation, "th", bevel, "th");
@@ -185,8 +211,7 @@ static void attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "softglow", softglow, "glow-radius");
   gegl_operation_meta_redirect (operation, "smoothedge", smoothedge, "alpha-percentile2");
   gegl_operation_meta_redirect (operation, "opacity", opacity, "value");
-
-  
+ 
 }
 
 static void

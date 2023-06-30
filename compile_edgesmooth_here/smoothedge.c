@@ -14,8 +14,18 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
- * 2022 Beaver Edge Smooth
+ * 2022 Edge Smooth
  */
+
+/*  
+Rough Recreation of GEGL Graph. This may not be 100% accurate but it is good enough. Using
+this method you can run the filter without installing it.
+ 
+id=1  gegl:over aux=[ ref=1  xor aux=[   median-blur radius=2.4 alpha-percentile=2 ]
+
+id=2  gegl:dst-atop aux=[  ref=2 median-blur radius=2 alpha-percentile=-1 gaussian-blur std-dev-x=2 std-dev-y=2 opacity value=2.7 median-blur radius= percentile=2  alpha-percentile=73  ]
+ */
+
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
@@ -24,55 +34,19 @@
 #ifdef GEGL_PROPERTIES
 
 #define TUTORIAL \
-"  id=1  gegl:over aux=[ ref=1  xor aux=[  ref=1  median-blur radius=2.4 alpha-percentile=2    ]  "\
-
-property_string (string, _("custom gegl graph"), TUTORIAL)
-      ui_meta     ("role", "output-extent")
+"  id=1  gegl:over aux=[ ref=1  xor aux=[   median-blur radius=2.4 alpha-percentile=2    ]  "\
 
 
+/*It is mid 2023 and I still don't know how to hide these from the GEGL Graph. Everything else is easy to hide though*/
 
-
-property_int  (radius, _("Radius"), 2)
-  value_range (-400, 400)
-  ui_range    (0, 100)
-  ui_meta     ("unit", "pixel-distance")
-  description (_("Neighborhood radius, a negative value will calculate with inverted percentiles"))
-    ui_meta     ("role", "output-extent")
-
-property_double  (alpha_percentile, _("Alpha percentile"), 2)
-  value_range (0, 100)
-  description (_("Neighborhood alpha percentile"))
-      ui_meta     ("role", "output-extent")
-
-
-
-property_int  (radius2, _("Radius"), 2)
-  value_range (-20, 20)
-  ui_range    (0, 100)
-  ui_meta     ("unit", "pixel-distance")
-  description (_("Neighborhood radius, a negative value will calculate with inverted percentiles"))
-  ui_meta     ("role", "output-extent")
-
-property_double  (percentile2, _("Percentile"), 1)
-  value_range (0, 100)
-  description (_("Neighborhood color percentile"))
-   ui_meta     ("role", "output-extent")
 
 property_double  (alpha_percentile2, _("Median edges"), 73)
   value_range (0, 100)
-  description (_("Neighborhood alpha percentile"))
-
-
-property_int  (radius3, _("Radius"), 2)
-  value_range (-400, 400)
-  ui_range    (0, 100)
-  ui_meta     ("unit", "pixel-distance")
-  description (_("Neighborhood radius, a negative value will calculate with inverted percentiles"))
-  ui_meta     ("role", "output-extent")
+  description (_("Apply a median blur only on the edges"))
 
 
 property_double (gaus, _("Blur Edge"), 1)
-   description (_("Standard deviation for the horizontal axis"))
+   description (_("Apply a Gaussian Blur only on the edges of an image"))
    value_range (0.0, 3.0)
    ui_range    (0.24, 3.0)
    ui_gamma    (3.0)
@@ -80,10 +54,10 @@ property_double (gaus, _("Blur Edge"), 1)
    ui_meta     ("axis", "x")
 
 
-property_double (value, _("Increase Opacity"), 1.2)
-    description (_("Global opacity value that is always used on top of the optional auxiliary input buffer."))
+property_double (value, _("Increase Opacity around edges"), 1.2)
+    description (_("Increase the opacity only around the edges"))
     value_range (1, 6.0)
-    ui_range    (1, 3.5)
+    ui_range    (1, 3.0)
 
 
 
@@ -98,30 +72,30 @@ property_double (value, _("Increase Opacity"), 1.2)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-  GeglNode *input, *output, *over, *xor, *graph, *behind, *median, *median2, *median3, *gaussian, *opacity;
+  GeglNode *input, *output, *graph, *behind, *median, *median2, *fixgraph,  *gaussian, *opacity;
 
   input    = gegl_node_get_input_proxy (gegl, "input");
   output   = gegl_node_get_output_proxy (gegl, "output");
 
-  over    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:over",
-                                  NULL);
 
-  xor    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:xor",
-                                  NULL);
 
   median    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:median-blur",
+                                  "operation", "gegl:median-blur", "radius", 2, "alpha-percentile", 2.0,
                                   NULL);
 
   median2    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:median-blur",
+                                  "operation", "gegl:median-blur", "radius", 2, "percentile", 1.0, 
                                   NULL);
 
-  median3    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:median-blur",
+  fixgraph    = gegl_node_new_child (gegl,
+                                  "operation", "gegl:median-blur", "radius", 0,
                                   NULL);
+
+/*  
+This "fixgraph" is for Gimp's non-destructive future. Median Blur at 0 makes no modifications to an image but solves a 
+bug by resetting gegl opacity. egl:opacity adjust the global opacity of an image; resulting in filters like "drop shadow" behaving
+in a damaged way because there global opacity is way to high. Median blur radius=0 resets its global opacity.
+ */
 
 
   gaussian    = gegl_node_new_child (gegl,
@@ -137,42 +111,19 @@ static void attach (GeglOperation *operation)
                                   NULL);
 
   graph    = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl",
+                                  "operation", "gegl:gegl", "string", TUTORIAL,
                                   NULL);
 
 
-
-
-
-
-gegl_node_link_many(input, graph, behind, output, NULL);
+gegl_node_link_many(input, graph, behind, fixgraph, output, NULL);
 gegl_node_link_many(input,  median, gaussian, opacity, median2,  NULL);
 gegl_node_connect_from (behind, "aux", median2, "output"); 
 
   gegl_operation_meta_redirect (operation, "gaus", gaussian, "std-dev-x");
-
   gegl_operation_meta_redirect (operation, "gaus", gaussian, "std-dev-y");
-
-  gegl_operation_meta_redirect (operation, "radius", median, "radius");
-
-  gegl_operation_meta_redirect (operation, "radius2", median2, "radius");
-
-  gegl_operation_meta_redirect (operation, "radius3", median3, "radius");
-
-  gegl_operation_meta_redirect (operation, "percentile2", median2, "percentile");
-
-  gegl_operation_meta_redirect (operation, "alpha_percentile", median, "alpha-percentile");
-
   gegl_operation_meta_redirect (operation, "alpha_percentile2", median2, "alpha-percentile");
-
   gegl_operation_meta_redirect (operation, "value", opacity, "value");
-
   gegl_operation_meta_redirect (operation, "string", graph, "string");
-
-
-
-
-
 }
 
 static void
@@ -189,7 +140,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Rough Edge Smoother"),
     "categories",  "EdgeSmoother",
     "reference-hash", "45ed5656a11bgxxdt27730vaefe2g4f1b2ac",
-    "description", _("GEGL will apply a median blur and a few other things around a transparent images edges "
+    "description", _("GEGL will apply a median blur and a few other things around a transparent images edges to repair them. "
                      ""),
     NULL);
 }
