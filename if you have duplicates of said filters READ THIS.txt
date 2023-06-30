@@ -1,1 +1,0 @@
-If you have duplicates of gegl:metallic or gegl:bevel filters. They will work but you may want to remove duplicates from GEGL Plugins because GEGL will continue to use the oldest version of a plugin if it has two or more copies. This means that in the future if I update GEGL Bevel and GEGL Metallic, that duplicates will prevent you from having the latest version.
