@@ -230,6 +230,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-hash", "450056eat8b351dt25700ftevfe2g4fonf1c",
     "description", _(""
                      "Make metal chrome text styling effects with GEGL. Works best on 100-500p text. Fails on very small text and excessively wide fonts."),
+    "gimp:menu-path", "<Image>/Filters/Text Styling",
+    "gimp:menu-label", _("Chrome Text..."),
     NULL);
 }
 
