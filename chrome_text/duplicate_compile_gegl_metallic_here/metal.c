@@ -61,13 +61,13 @@ Below is a list of all the GEGL Graph strings being called by this filter. they 
 " id=darken gimp:layer-mode layer-mode=multiply opacity=0.3 aux=[ ref=darken ] "\
 
 #define syntax5 \
-" denoise-dct sigma=3 median-blur radius=0 alien-map cpn-1-frequency=6 cpn-2-frequency=5.9 cpn-3-frequency=3 hue-chroma lightness=-5 noise-reduction iterations=3 saturation scale=0 gimp:layer-mode layer-mode=hsl-color opacity=0.8 composite-mode=auto  aux=[ color value=#ffdc00  ] id=darken gimp:layer-mode layer-mode=addition opacity=0.3 aux=[ ref=darken ] denoise-dct sigma=12 levels out-low=0.024 median-blur radius=0 "\
+" denoise-dct sigma=3 median-blur radius=0  abyss-policy=none alien-map cpn-1-frequency=6 cpn-2-frequency=5.9 cpn-3-frequency=3 hue-chroma lightness=-5 noise-reduction iterations=3 saturation scale=0 gimp:layer-mode layer-mode=hsl-color opacity=0.8 composite-mode=auto  aux=[ color value=#ffdc00  ] id=darken gimp:layer-mode layer-mode=addition opacity=0.3 aux=[ ref=darken ] denoise-dct sigma=12 levels out-low=0.024 median-blur  abyss-policy=none radius=0 "\
 
 #define syntax6 \
 " bilateral-filter blur-radius=4 edge-preservation=9  bilateral-filter blur-radius=1 edge-preservation=3 mean-curvature-blur iterations=3   "\
 
 #define syntax7 \
-" id=dv gimp:layer-mode layer-mode=normal opacity=0 aux=[ ref=dv  emboss depth=3 elevation=25  id=divcall ] unsharp-mask scale=0.3 denoise-dct sigma=7 id=1 gimp:layer-mode layer-mode=hsl-color aux=[ ref=1 color-overlay value=#ffbb00 ]  alien-map cpn-1-frequency=6 cpn-2-frequency=6 cpn-3-frequency=49 saturation scale=0 bloom strength=95 levels in-high=1.87  in-low=0.02 noise-reduction iterations=5 id=color  gimp:layer-mode layer-mode=hsl-color opacity=0.84 composite-mode=clip-to-backdrop aux=[ color value=#f4cd62] unsharp-mask scale=0.9 median-blur radius=0  gimp:layer-mode layer-mode=divide opacity=0.03 aux=[ ref=divcall gaussian-blur std-dev-x=0.5 std-dev-y=0.7 noise-reduction ] "\
+" id=dv gimp:layer-mode layer-mode=normal opacity=0 aux=[ ref=dv  emboss depth=3 elevation=25  id=divcall ] unsharp-mask scale=0.3 denoise-dct sigma=7 id=1 gimp:layer-mode layer-mode=hsl-color aux=[ ref=1 color-overlay value=#ffbb00 ]  alien-map cpn-1-frequency=6 cpn-2-frequency=6 cpn-3-frequency=49 saturation scale=0 bloom strength=95 levels in-high=1.87  in-low=0.02 noise-reduction iterations=5 id=color  gimp:layer-mode layer-mode=hsl-color opacity=0.84 composite-mode=clip-to-backdrop aux=[ color value=#f4cd62] unsharp-mask scale=0.9 median-blur  abyss-policy=none radius=0  gimp:layer-mode layer-mode=divide opacity=0.03 aux=[ ref=divcall gaussian-blur  clip-extent=false  abyss-policy=none std-dev-x=0.5 std-dev-y=0.7 noise-reduction ] "\
 
 #define syntax8 \
 " gimp:desaturate mode=value invert value-invert "\
@@ -316,7 +316,7 @@ state->sl = gegl_node_new_child (gegl,
 
 
    state->gaussian = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gaussian-blur",
+                                  "operation", "gegl:gaussian-blur", "clip-extent", FALSE,   "abyss-policy", 0,                                       
                                   NULL);
 
    state->idref = gegl_node_new_child (gegl,
@@ -391,11 +391,11 @@ state->sl = gegl_node_new_child (gegl,
                                   NULL);
 
    state->repair = gegl_node_new_child (gegl,
-                                  "operation", "gegl:median-blur", "radius", 0,
+                                  "operation", "gegl:median-blur", "radius", 0,  "abyss-policy",     GEGL_ABYSS_NONE,
                                   NULL);
 
    state->repair2 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:median-blur", "radius", 0,
+                                  "operation", "gegl:median-blur", "radius", 0,  "abyss-policy",     GEGL_ABYSS_NONE,
                                   NULL);
 
 
@@ -508,7 +508,7 @@ operation_class->attach = attach;
 
   gegl_operation_class_set_keys (operation_class,
 /*If this filter ever breaks try changing the name gegl: or lb: to something else. This is because Gimp's team may want different name spaces.*/
-    "name",        "gegl:metallic",
+    "name",        "lb:metallic",
     "title",       _("Metallic"),
     "reference-hash", "45ed5656h28ff20fjf25sb2ac",
     "description", _("Add a metal effect to subjects and objects."),
