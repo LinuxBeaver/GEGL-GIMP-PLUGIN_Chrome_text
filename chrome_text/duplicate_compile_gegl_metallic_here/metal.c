@@ -31,12 +31,12 @@ gimp:layer-mode layer-mode=hsl-color opacity=0.8 composite-mode=auto  aux=[ colo
 id=darken
 gimp:layer-mode layer-mode=addition opacity=0.3 aux=[ ref=darken ]
 
---end of syntax and list of alternative blend modes for "addition" -- 
+--end of syntax and list of alternative blend modes for "addition" --
 #addition graimerge linearburn multiply
 
 Also, Syntax7 is a unique GEGL Graph that makes an amazing even better gold effect.
 
-October 2 2023, This filter got a update that gives it new metal effects. This is an example of me updating a plugin without breaking presets by adding all the new 
+October 2 2023, This filter got a update that gives it new metal effects. This is an example of me updating a plugin without breaking presets by adding all the new
 options in a drop down list. I, (Beaver) am doing things with GEGL that gimp's team or anyone has ever done. It is so fun to pioneer this software.
 
 
@@ -153,7 +153,7 @@ property_double (altsmooth, _("Smooth alt metal"), 3)
    description  (_("Smooth the alt metal with dct denoise."))
    value_range  (1, 45)
                  ui_meta ("visible", "guichange {oct2023metal, oct2023metalcolor}")
-	
+
 
 property_color (color, _("Color Overlay of Metal"), "#fcf9eb")
                  ui_meta ("visible", "guichange {colormetal}")
@@ -214,10 +214,10 @@ typedef struct
 GeglNode *input;
 GeglNode *output;
 GeglNode *gaussian;
-GeglNode *solar; 
-GeglNode *desat; 
+GeglNode *solar;
+GeglNode *desat;
 GeglNode *smooth;
-GeglNode *light; 
+GeglNode *light;
 GeglNode *invert;
 GeglNode *opacity;
 GeglNode *hslcolor;
@@ -243,12 +243,12 @@ GeglNode *solar2;
 GeglNode *desatinverts;
 GeglNode *dctsmooth2;
 GeglNode *idref2;
-} State; 
+} State;
 
 static void attach (GeglOperation *operation)
 {
 
-  
+
 }
 
 static void update_graph (GeglOperation *operation)
@@ -316,7 +316,7 @@ state->sl = gegl_node_new_child (gegl,
 
 
    state->gaussian = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gaussian-blur", "clip-extent", FALSE,   "abyss-policy", 0,                                       
+                                  "operation", "gegl:gaussian-blur", "clip-extent", FALSE,   "abyss-policy", 0,
                                   NULL);
 
    state->idref = gegl_node_new_child (gegl,
@@ -338,52 +338,52 @@ state->sl = gegl_node_new_child (gegl,
 
 
   state->color = gegl_node_new_child (gegl,
-                                  "operation", "gegl:color-overlay", 
+                                  "operation", "gegl:color-overlay",
                                   NULL);
 
 
   state->color2 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:color-overlay", 
+                                  "operation", "gegl:color-overlay",
                                   NULL);
 
 
 
 
   state->dctsmooth2 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:denoise-dct", 
+                                  "operation", "gegl:denoise-dct",
                                   NULL);
 
 
   state->graph1 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax1, 
+                                  "operation", "gegl:gegl", "string", syntax1,
                                   NULL);
 
   state->graph2 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax2, 
+                                  "operation", "gegl:gegl", "string", syntax2,
                                   NULL);
 
   state->graph3 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax3, 
+                                  "operation", "gegl:gegl", "string", syntax3,
                                   NULL);
 
   state->graph4 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax4, 
+                                  "operation", "gegl:gegl", "string", syntax4,
                                   NULL);
 
   state->fixedgold = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax5, 
+                                  "operation", "gegl:gegl", "string", syntax5,
                                   NULL);
 
   state->fixedgold2 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax7, 
+                                  "operation", "gegl:gegl", "string", syntax7,
                                   NULL);
 
   state->desatinverts = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax8, 
+                                  "operation", "gegl:gegl", "string", syntax8,
                                   NULL);
 
   state->smooth08 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gegl", "string", syntax6, 
+                                  "operation", "gegl:gegl", "string", syntax6,
                                   NULL);
 
    state->dctsmooth = gegl_node_new_child (gegl,
@@ -421,7 +421,7 @@ switch (o->guichange) {
   gegl_node_link_many (state->input, state->invert, state->opacity, NULL);
         break;
     case METAL_COLOR:
-  gegl_node_link_many (state->input, state->gaussian, state->repair2, state->dctsmooth, state->over, state->solar, state->desat, state->smooth, state->light, state->idref, state->hslcolor,  graphblendmode, state->repair, state->output, NULL);
+  gegl_node_link_many (state->input, state->gaussian, state->repair2,  state->over, state->solar, state->desat, state->smooth, state->light, state->idref, state->hslcolor,  graphblendmode, state->repair, state->output, NULL);
   gegl_node_connect (state->over, "aux", state->opacity, "output");
   gegl_node_connect (state->hslcolor, "aux", state->color, "output");
   gegl_node_link_many (state->input, state->invert, state->opacity, NULL);
@@ -442,7 +442,7 @@ switch (o->guichange) {
   gegl_node_link_many (state->idref,  state->color2,  NULL);
     }
 
-else 
+else
 
 switch (o->guichange) {
         break;
@@ -452,7 +452,7 @@ switch (o->guichange) {
   gegl_node_link_many (state->input, state->invert, state->opacity, NULL);
         break;
     case METAL_COLOR:
-  gegl_node_link_many (state->input, state->gaussian, state->repair2,  state->dctsmooth, state->over, state->solar, state->desat, state->smooth, state->light, state->idref, state->hslcolor,  graphblendmode, state->smooth08, state->repair, state->output, NULL);
+  gegl_node_link_many (state->input, state->gaussian, state->repair2, state->over, state->solar, state->desat, state->smooth, state->light, state->idref, state->hslcolor,  graphblendmode, state->smooth08, state->repair, state->output, NULL);
   gegl_node_connect (state->over, "aux", state->opacity, "output");
   gegl_node_connect (state->hslcolor, "aux", state->color, "output");
   gegl_node_link_many (state->input, state->invert, state->opacity, NULL);
@@ -473,7 +473,7 @@ switch (o->guichange) {
   gegl_node_link_many (state->idref, state->color2,  NULL);
 }
 
-      
+
   gegl_operation_meta_redirect (operation, "solar1", state->solar, "cpn-1-frequency");
   gegl_operation_meta_redirect (operation, "solar2", state->solar, "cpn-2-frequency");
   gegl_operation_meta_redirect (operation, "solar3", state->solar, "cpn-3-frequency");
