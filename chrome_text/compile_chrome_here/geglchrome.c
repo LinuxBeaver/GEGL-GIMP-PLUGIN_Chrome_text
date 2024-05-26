@@ -22,7 +22,7 @@ Test Plugins GEGL graph without installing. REQUIRES BEVEL AND EDGE SMOOTH
 
 color-overlay value=#ffb386
 lb:bevel azimuth=60 bevel1=58 th=0.210 radius2=2  radius1=7 bevel2=
-metallic  solar1=27 solar2=2.8 solar3=2.1 
+metallic  solar1=27 solar2=2.8 solar3=2.1
 noise-reduction iterations=2
 bloom strength=2
 
@@ -66,29 +66,17 @@ property_double (azimuth, _("Rotate Lighting"), 60.0)
 property_double (solar1, _("Solarization of Red Channel"), 2.7)
     description (_("Gimp's alien map filter adjusting Red Channel"))
   value_range (2, 2.8)
-  ui_meta     ("sensitive", "! cpn-1-keep")
-  ui_meta     ("label", "[color-model {rgb} : rgb-label,"
-                        " color-model {hsl} : hsl-label]")
-  ui_meta     ("rgb-label", _("Red frequency"))
-  ui_meta     ("hsl-label", _("Hue frequency"))
+
 
 property_double  (solar2, _("Solarization of Green Channel"), 2.8)
   value_range (2.2, 2.8)
     description (_("Gimp's alien map filter adjusting Green Channel"))
-  ui_meta     ("sensitive", "! cpn-2-keep")
-  ui_meta     ("label", "[color-model {rgb} : rgb-label,"
-                        " color-model {hsl} : hsl-label]")
-  ui_meta     ("rgb-label", _("Green frequency"))
-  ui_meta     ("hsl-label", _("Saturation frequency"))
+
+
 
 property_double  (solar3, _("Solarization of Blue Channel"), 2.1)
     description (_("Gimp's alien map filter adjusting Blue Channel"))
   value_range (0.0, 4.0)
-  ui_meta     ("sensitive", "! cpn-3-keep")
-  ui_meta     ("label", "[color-model {rgb} : rgb-label,"
-                        " color-model {hsl} : hsl-label]")
-  ui_meta     ("rgb-label", _("Blue frequency"))
-  ui_meta     ("hsl-label", _("Lightness frequency"))
 
 property_double (lightmetal, _("Darkness to Light"), 0.0)
    description  (_("Lightness adjustment"))
@@ -126,7 +114,7 @@ property_double  (smoothedge, _("Median to smooth rough edges"), 50)
 ui_meta ("visible", "guichange {advancechrometext}")
 
 property_double (opacity, _("Hyper Opacity for edges"), 1.0)
-    description (_("Above 100% opacity for edges"))
+    description (_("Above 100 opacity for edges"))
     value_range (1, 3)
     ui_range    (1, 3)
 ui_meta ("visible", "guichange {advancechrometext}")
@@ -160,7 +148,7 @@ static void attach (GeglOperation *operation)
   color    = gegl_node_new_child (gegl,
                                   "operation", "gegl:color-overlay",
                                    "value", hidden_color_chrome_text, NULL);
-                           
+
 
   bevel    = gegl_node_new_child (gegl,
                                   "operation", "lb:bevel",
@@ -196,7 +184,7 @@ static void attach (GeglOperation *operation)
 
   gegl_node_link_many (input, color, bevel, metallic, glow, sharpen, softglow, noisereduction, smoothedge, opacity, output, NULL);
 
-  gegl_operation_meta_redirect (operation, "value", color, "value");
+
   gegl_operation_meta_redirect (operation, "th", bevel, "th");
   gegl_operation_meta_redirect (operation, "azimuth", bevel, "azimuth");
   gegl_operation_meta_redirect (operation, "bvradius", bevel, "radius1");
@@ -211,7 +199,7 @@ static void attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "softglow", softglow, "glow-radius");
   gegl_operation_meta_redirect (operation, "smoothedge", smoothedge, "alpha-percentile2");
   gegl_operation_meta_redirect (operation, "opacity", opacity, "value");
- 
+
 }
 
 static void
