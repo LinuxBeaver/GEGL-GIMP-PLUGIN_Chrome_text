@@ -1,4 +1,4 @@
-# GEGL Chrome Metal Text Stylpling Plugin for Gimp
+# GEGL Chrome Metal Text Styling Plugin for Gimp
 Metal Text Styling Filter for Gimp - THIS IS A SUPER FILTER Which means it requires the existing GEGL Metallic and GEGL Bevel for it to work! If you already have these filters don't compile them. Unless you are updating. 
 
 ![image preview](preview3.png)
