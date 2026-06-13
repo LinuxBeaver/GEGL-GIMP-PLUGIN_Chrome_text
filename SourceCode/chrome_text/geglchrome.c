@@ -64,18 +64,18 @@ property_double (azimuth, _("Rotate Lighting"), 60.0)
     ui_meta ("direction", "ccw")
 
 property_double (solar1, _("Solarization of Red Channel"), 2.7)
-    description (_("Gimp's alien map filter adjusting Red Channel"))
+    description (_("Gimpꞌs alien map filter adjusting Red Channel"))
   value_range (2, 2.8)
 
 
 property_double  (solar2, _("Solarization of Green Channel"), 2.8)
   value_range (2.2, 2.8)
-    description (_("Gimp's alien map filter adjusting Green Channel"))
+    description (_("Gimpꞌs alien map filter adjusting Green Channel"))
 
 
 
 property_double  (solar3, _("Solarization of Blue Channel"), 2.1)
-    description (_("Gimp's alien map filter adjusting Blue Channel"))
+    description (_("Gimpꞌs alien map filter adjusting Blue Channel"))
   value_range (0.0, 4.0)
 
 property_double (lightmetal, _("Darkness to Light"), 0.0)
@@ -122,7 +122,7 @@ ui_meta ("visible", "guichange {advancechrometext}")
 
 
 property_double (th, _("Threshold Alpha of Bevel"), 0.210)
-    description(_("Bevel's threshold Alpha"))
+    description(_("Bevelꞌs threshold Alpha"))
   ui_range (0.195, 0.231)
 ui_meta ("visible", "guichange {advancechrometext}")
 

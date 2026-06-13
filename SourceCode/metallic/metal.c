@@ -18,7 +18,7 @@
  */
 
 /*
-June 25 2023- Recreation of Metallic's GEGL Graph.
+June 25 2023- Recreation of Metallicꞌs GEGL Graph.
 
 alien-map cpn-1-frequency=6 cpn-2-frequency=5.9 cpn-3-frequency=3
 hue-chroma lightness=-5
@@ -37,7 +37,7 @@ gimp:layer-mode layer-mode=addition opacity=0.3 aux=[ ref=darken ]
 Also, Syntax7 is a unique GEGL Graph that makes an amazing even better gold effect.
 
 October 2 2023, This filter got a update that gives it new metal effects. This is an example of me updating a plugin without breaking presets by adding all the new
-options in a drop down list. I, (Beaver) am doing things with GEGL that gimp's team or anyone has ever done. It is so fun to pioneer this software.
+options in a drop down list. I, (Beaver) am doing things with GEGL that gimpꞌs team or anyone has ever done. It is so fun to pioneer this software.
 
 
 Below is a list of all the GEGL Graph strings being called by this filter. they are NOT all called together and some do radically different things.
@@ -89,26 +89,26 @@ enum_value   (OCT_2023_METAL_COLOR, "oct2023metalcolor", N_("Oct 2023 Metal (wit
   enum_end (guiendmetalcolor)
 
 property_double (liquid, _("Liquidify Metal"), 0.0)
-    description (_("In default this is disabled, but when enabled it will smoothly expand the metal and make it some what 'liquid-like'. "))
+    description (_("In default this is disabled, but when enabled it will smoothly expand the metal and make it some what ꞌliquid-likeꞌ. "))
   value_range (0.0, 8)
   ui_steps      (0.5, 1)
 
 
 property_double (solar1, _("Solarization of Red Channel"), 2.7)
-    description (_("Solarization is another name for Gimp's 'alien map' filter effect, which at low values shifts tones. A method which can create a metallic effect when combined with desaturation. "))
+    description (_("Solarization is another name for Gimpꞌs ꞌalien mapꞌ filter effect, which at low values shifts tones. A method which can create a metallic effect when combined with desaturation. "))
   value_range (0, 6)
   ui_steps      (0.100, 1.00)
                  ui_meta ("visible", "guichange {metal, colormetal}")
 
 
 property_double  (solar2, _("Solarization of Green Channel"), 2.8)
-    description (_("Solarization is another name for Gimp's 'alien map' filter effect, which at low values shifts tones. A method which can create a metallic effect when combined with desaturation. "))
+    description (_("Solarization is another name for Gimpꞌs ꞌalien mapꞌ filter effect, which at low values shifts tones. A method which can create a metallic effect when combined with desaturation. "))
   value_range (2.2, 6)
   ui_steps      (0.100, 1.00)
                  ui_meta ("visible", "guichange {metal, colormetal}")
 
 property_double  (solar3, _("Solarization of Blue Channel"), 2.1)
-    description (_("Solarization is another name for Gimp's 'alien map' filter effect, which at low values shifts tones. A method which can create a metallic effect when combined with desaturation. "))
+    description (_("Solarization is another name for Gimpꞌs ꞌalien mapꞌ filter effect, which at low values shifts tones. A method which can create a metallic effect when combined with desaturation. "))
   value_range (0, 6)
   ui_steps      (0.100, 1.00)
                  ui_meta ("visible", "guichange {metal, colormetal}")
@@ -135,17 +135,17 @@ property_double (value, _("Slide to invert colors on original image"), 0)
 
 
 property_double (altsolar1, _("Alt Solar Red Channel"), 276)
-   description  (_("Alien Map's red channel phase shift"))
+   description  (_("Alien Mapꞌs red channel phase shift"))
    value_range  (240, 290)
                  ui_meta ("visible", "guichange {oct2023metal, oct2023metalcolor}")
 
 property_double (altsolar2, _("Alt Solar Green Channel"), 145)
-   description  (_("Alien Map's green channel phase shift"))
+   description  (_("Alien Mapꞌs green channel phase shift"))
    value_range  (120, 180)
                  ui_meta ("visible", "guichange {oct2023metal, oct2023metalcolor}")
 
 property_double (altsolar3, _("Alt Solar Blue Channel"), 13)
-   description  (_("Alien Map's blue channel phase shift"))
+   description  (_("Alien Mapꞌs blue channel phase shift"))
    value_range  (8, 19)
                  ui_meta ("visible", "guichange {oct2023metal, oct2023metalcolor}")
 
@@ -199,7 +199,7 @@ enum_start (metallic_clownworld)
   enum_value (GRAPH_BLEND_MODE_TYPE_MULTIPLY,      "graph4",
               N_("Multiply"))
 enum_end (metallicclownworld)
-/* This is the first part of color overlay's blend mode switch. The ENUM list with all the blend modes needed by color overlay */
+/* This is the first part of color overlayꞌs blend mode switch. The ENUM list with all the blend modes needed by color overlay */
 
 
 #else
@@ -509,12 +509,12 @@ GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass)
 operation_class->attach = attach;
 
   gegl_operation_class_set_keys (operation_class,
-/*If this filter ever breaks try changing the name gegl: or lb: to something else. This is because Gimp's team may want different name spaces.*/
+/*If this filter ever breaks try changing the name gegl: or lb: to something else. This is because Gimpꞌs team may want different name spaces.*/
     "name",        "lb:metallic",
     "title",       _("Metallic"),
     "reference-hash", "45ed5656h28ff20fjf25sb2ac",
     "description", _("Add a metal effect to subjects and objects."),
-/*This is an instruction to put the filter in Gimp's menu. It only works in Gimp 2.99.16 and up. will not work in Gimp 2.10 as of August 28 2023*/
+/*This is an instruction to put the filter in Gimpꞌs menu. It only works in Gimp 2.99.16 and up. will not work in Gimp 2.10 as of August 28 2023*/
     "gimp:menu-path", "<Image>/Filters/Artistic",
     "gimp:menu-label", _("Metallic and Gold (for subjects and object)..."),
     NULL);
